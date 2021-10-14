@@ -1,0 +1,61 @@
+-- ------------------------------------------------------------BELOW ARE THE STEPS------------------------------------------------------------
+-- CREATE PROCEDURE ETL AS
+-- BEGIN 
+--     -- CALL ETL PROCEDURES FOR EACH SOURCE DATABASE
+--     EXEC ETL_NHRM;
+--     EXEC ETL_RMH;
+-- END;
+
+-- GO 
+-- CREATE PROCEDURE ETL_NHRM AS
+-- BEGIN  
+--     -- FOR EACH DIMENSION/FACT TABLE IN DW ,WE WILL HAVE ONE SP TO CALL
+--     -- THE ORDER CALL IN WILL BE IMPORTANT E.G. DIMENSIONTABLES BEFORE FACT TABLE
+--     EXEC ETL_NHRM_PATIENT;
+--     EXEC ETL_NHRM_MEASUREMENT;
+--     EXEC ETL_NHRM_DATAPOINT;
+
+--     -- IF THERE WERE OTHER DATA CUBES, ADD HERE
+-- END;
+
+-- GO 
+-- CREATE PROCEDURE ETL_NHRM_PATIENT AS
+-- BEGIN 
+--     -- 1, PIECING TOGETHER OUR QUERY TO EXCLUDE DATA IN DW AND ERROREVENT TABLE
+--     -- 2,GET THE REQUIRED DATA FROM THE SOURCE DATABASE
+--     -- 3,STORE THAT DATA (IN A NON-PERMANENT WAY SUCHA AS MEMORY) TO PASS BETWEEN VARIOUS ETL PROCEDURES
+--     -- 4, APPLY ANY FILTERS TO THE DATA
+--     -- 5 INSERT THE GOOD DATA
+--     -- 6,INSERT ANY DATA WHICH THE FILTER RULES NEEDS TO BE TRANSFORMED/MODIFIED
+
+CREATE type TestTableType as TABLE
+(
+    -- URNumber NVARCHAR(100),
+    -- Email NVARCHAR(256),
+    -- Title NVARCHAR(50)
+    testid int,
+    testdata NVARCHAR(100)
+);
+
+GO
+
+
+
+create procedure var_select_test as 
+
+Begin
+	--		
+	declare @TESTTABLE Testtabletype;
+	
+	declare @command nvarchar(max)
+
+	set @command  = 'SELECT * FROM OPENROWSET(''SQLNCLI'', ' +
+                    '''Server=dad.cbrifzw8clzr.us-east-1.rds.amazonaws.com;UID=ldtreadonly;PWD=Kitemud$41;'',' +
+                    '''SELECT * FROM DDDM_TPS_1.dbo.PATIENT'');'
+	insert into @testtable
+	exec(@command);
+end
+
+ETL_NHRM_PATIENT_FILTER_1 @INPUT=@testtable;
+ETL_NHRM_PATIENT_TRANSFER_GOOD @INPUT=@testtable
+-- END
