@@ -35,7 +35,7 @@ DROP FUNCTION IF EXISTS GET_CONNECTION_STRING
 GO
 CREATE FUNCTION GET_CONNECTION_STRING() returns NVARCHAR(MAX) as 
 BEGIN
-    return 'Server=dad.cbrifzw8clzr.us-east-1.rds.amazonaws.com;UID=xiaoxiao;PWD=Kangcerking1;';
+    return 'Server=db.cgau35jk6tdb.us-east-1.rds.amazonaws.com;UID=xiaoxiao;PWD=Kangcerking1;';
 END;
 GO
 
@@ -200,6 +200,8 @@ END;
 
 DROP PROCEDURE IF EXISTS var_select_test;
 drop procedure if exists TABLE_PARAM_TEST
+
+-- create a new data type
 drop type if exists TestTableType;
 CREATE type TestTableType as TABLE
 (
@@ -226,7 +228,7 @@ create procedure var_select_test as
 
 Begin
 	--		
-	declare @TESTTABLE Testtabletype;
+	declare @testtable Testtabletype;
 	
 	declare @command nvarchar(max)
 

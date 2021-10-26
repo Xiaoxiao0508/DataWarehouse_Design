@@ -4,3 +4,5 @@
 -- SELECT CAST( GETDATE() AS Date ) ;
 
 -- select GETDATE()
+
+select YEAR(SYSDATETIME())

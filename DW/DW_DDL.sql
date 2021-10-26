@@ -1,21 +1,10 @@
--- =-----------------------------------------------------in the source db-------------------------------------------
--- ----------------------------------------------create login 
--- USE [master]
--- GO
--- -- CREATE LOGIN xiaoxiao with PASSWORD='Kangcerking1';
--- GO
--- -------------------------------create user for the login in the specific db  you want warehouse to read-only
--- USE [DDDM_TPS_1]
--- GO
--- create USER xiaoxiao FOR LOGIN xiaoxiao
--- go
--- EXEC sp_addrolemember 'db_datareader',xiaoxiao;
 
---------------------------------------------------------in the dw warehouse------------------------------------------
--- SELECT Patient.URNumber
--- FROM 
--- OPENROWSET('SQLNCLI','Server=dad.cbrifzw8clzr.us-east-1.rds.amazonaws.com;UID=xiaoxiao;PWD=Kangcerking1;','SELECT * FROM [DDDM_TPS_1].dbo.Patient') Patient;
 
+--------------------------------------------------------in the dw warehouse-(connect to the dw db)-----------------------------------------
+SELECT Patient.URNumber,Patient.Gender,Patient.Dob,Patient.Suburb,Patient.Postcode,Patient.Countryofbirth,Patient.Preferredlanguage,Patient.Active
+FROM
+OPENROWSET('SQLNCLI', 'Server=db.cgau35jk6tdb.us-east-1.rds.amazonaws.com;UID=bgmanager;PWD=beng123;', 
+'SELECT * FROM DDDM_TPS_1.dbo.PATIENT') patient;
 
 use hospital
 
@@ -114,7 +103,7 @@ SourceTable NVARCHAR(50) NOT NULL,
 CREATE TABLE DataPointRecord(
     DWDataPointRecordID NVARCHAR(50) CHECK (LEN(DWDataPointRecordID)=8),
     -- DWPatientID INT,
-     DWPatientID NVARCHAR(50),
+    DWPatientID NVARCHAR(50),
     DWMeasurementID INT,
     DWDateID INT NOT NULL,
     [Value] Float NOT NULL,
@@ -131,7 +120,7 @@ CREATE TABLE DWRecord(
     DWRecordID int IDENTITY(0001,1)CHECK (LEN(DWRecordID)=8),
     SourceDB NVARCHAR(50) NOT NULL,
     SourceID INT NOT NULL,
-SourceTable NVARCHAR(50) NOT NULL,
+    SourceTable NVARCHAR(50) NOT NULL,
     RecordType NVARCHAR(50) NOT NULL,
     Category NVARCHAR(50) NOT NULL,
     PRIMARY KEY (DWRecordID)
@@ -140,7 +129,7 @@ SourceTable NVARCHAR(50) NOT NULL,
 CREATE TABLE Intervention(
     DWInterventionID NVARCHAR(50) CHECK (LEN(DWInterventionID)=8),
     -- DWPatientID INT,
-     DWPatientID NVARCHAR(50),
+    DWPatientID NVARCHAR(50),
     DWRecordID INT,
     DWDateID INT NOT NULL,
     Note NVARCHAR(MAX),
