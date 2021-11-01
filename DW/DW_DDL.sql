@@ -1,10 +1,11 @@
 
 
 --------------------------------------------------------in the dw warehouse-(connect to the dw db)-----------------------------------------
-SELECT Patient.URNumber,Patient.Gender,Patient.Dob,Patient.Suburb,Patient.Postcode,Patient.Countryofbirth,Patient.Preferredlanguage,Patient.Active
-FROM
-OPENROWSET('SQLNCLI', 'Server=db.cgau35jk6tdb.us-east-1.rds.amazonaws.com;UID=bgmanager;PWD=beng123;', 
-'SELECT * FROM DDDM_TPS_1.dbo.PATIENT') patient;
+-- SELECT Patient.URNumber,Patient.Gender,Patient.Dob,Patient.Suburb,Patient.Postcode,Patient.Countryofbirth,Patient.Preferredlanguage,Patient.Active
+-- SELECT URNumber
+-- FROM
+-- OPENROWSET('SQLNCLI', 'Server=db.cgau35jk6tdb.us-east-1.rds.amazonaws.com;UID=bgmanager;PWD=beng123;', 
+-- 'SELECT * FROM DDDM_TPS_1.dbo.PATIENT') patient;
 
 use hospital
 
@@ -141,12 +142,12 @@ CREATE TABLE Intervention(
 -- -------------------------------------------------------------------------------
 CREATE TABLE ERROREVENT
 (
-    -- ERRORID INTEGER IDENTITY(1,1),
+    ERRORID INTEGER IDENTITY(1,1),
     SOURCEDB NVARCHAR(50),
     SOURCEID NVARCHAR(50),
     SOURCETABLE NVARCHAR(50),
     FILTERID int,
-    -- [DATETIME] DATETIME,
+    DATE_TIME DATETIME,
     [ACTION] NVARCHAR(50),
     [DESCRIPTION] NVARCHAR(MAX),
     CONSTRAINT [ACTION] CHECK ([ACTION] IN ('SKIP','MODIFY'))
