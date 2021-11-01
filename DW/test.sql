@@ -1,4 +1,3 @@
-
 -- SELECT NAME FROM SYS.DATABASES;
 use hospital
 -- IF OBJECT_ID('PATIENT_FILTER_1') IS NOT NULL
@@ -92,8 +91,8 @@ select *
 from DWPatient
 INSERT INTO ERROREVENT
 VALUES
-    ('NHRM', 900000005, 'Patient', 1, 'SKIP', 'description'),
-    ('NHRM', 900000025, 'Patient', 1, 'SKIP', 'description')
+    ('NHRM', 900000005, 'Patient', 2012-02-21,1, 'SKIP', 'description'),
+    ('NHRM', 900000025, 'Patient',2012-02-21, 1, 'SKIP', 'description')
 
 
 select *
@@ -104,6 +103,8 @@ from ERROREVENT
 -- ------------------------------------get required data from source database-----------------------------------------
 
 drop procedure if exists DIM_PATIENT_TRANSFER_GOOD 
+GO
+CREATE PROCEDURE DIM_PATIENT_TRANSFER_GOOD  AS
 -- BEGIN
 --     -- ASSUMPTIONS
 --     -- FILTERING HAS ALREADY BEEN DONE
@@ -193,58 +194,58 @@ print @insertquery
     EXEC(@COMMAND)
 END;
 
+select * from DWPatient
+
+
+-- -- -------------------------STORE DATA IN A TEMP VARIBALE AND USE IT AS PARAMETER FOR SP----------------------------------
+
+-- DROP PROCEDURE IF EXISTS var_select_test;
+-- drop procedure if exists TABLE_PARAM_TEST
+
+-- -- create a new data type
+-- drop type if exists TestTableType;
+-- CREATE type TestTableType as TABLE
+-- (
+--     -- URNumber NVARCHAR(100),
+--     -- Email NVARCHAR(256),
+--     -- Title NVARCHAR(50)
+--     testid int,
+--     testdata NVARCHAR(100)
+-- );
+
+-- GO
+
+
+-- CREATE PROCEDURE TABLE_PARAM_TEST @IN_TABLE TestTableType readonly AS
+-- BEGIN
+--     SELECT 'ZZZ',* FROM @IN_TABLE;
+-- END;
+-- GO 
 
 
 
--- -------------------------STORE DATA IN A TEMP VARIBALE AND USE IT AS PARAMETER FOR SP----------------------------------
+-- -- ----------------TEST SELECTING DATA AND STORE IT INTO A CUSTOM DATA TYPE TEMP VARIABLE
+-- create procedure var_select_test as 
 
-DROP PROCEDURE IF EXISTS var_select_test;
-drop procedure if exists TABLE_PARAM_TEST
-
--- create a new data type
-drop type if exists TestTableType;
-CREATE type TestTableType as TABLE
-(
-    -- URNumber NVARCHAR(100),
-    -- Email NVARCHAR(256),
-    -- Title NVARCHAR(50)
-    testid int,
-    testdata NVARCHAR(100)
-);
-
-GO
-
-
-CREATE PROCEDURE TABLE_PARAM_TEST @IN_TABLE TestTableType readonly AS
-BEGIN
-    SELECT 'ZZZ',* FROM @IN_TABLE;
-END;
-GO 
-
-
-
--- ----------------TEST SELECTING DATA AND STORE IT INTO A CUSTOM DATA TYPE TEMP VARIABLE
-create procedure var_select_test as 
-
-Begin
-	--		
-	declare @testtable Testtabletype;
+-- Begin
+-- 	--		
+-- 	declare @testtable Testtabletype;
 	
-	declare @command nvarchar(max)
+-- 	declare @command nvarchar(max)
 
-	set @command  = 'SELECT * FROM OPENROWSET(''SQLNCLI'', ' +
-                    '''Server=dad.cbrifzw8clzr.us-east-1.rds.amazonaws.com;UID=ldtreadonly;PWD=Kitemud$41;'',' +
-                    '''SELECT * FROM DDDM_TPS_1.dbo.PATIENT'');'
-	insert into @testtable
-	exec(@command);
+-- 	set @command  = 'SELECT * FROM OPENROWSET(''SQLNCLI'', ' +
+--                     '''Server=dad.cbrifzw8clzr.us-east-1.rds.amazonaws.com;UID=ldtreadonly;PWD=Kitemud$41;'',' +
+--                     '''SELECT * FROM DDDM_TPS_1.dbo.PATIENT'');'
+-- 	insert into @testtable
+-- 	exec(@command);
 
-	-- exec ETL_NHRM_PATIENT_FILTER1 @IN_TABLE = @testtable
-	-- exec ETL_NHRM_PATIENT_FILTER2 @IN_TABLE  = @testtable
-	-- exec ETL_NHRM_PATIENT_FILTER3 @IN_TABLE  = @testtable
+-- 	-- exec ETL_NHRM_PATIENT_FILTER1 @IN_TABLE = @testtable
+-- 	-- exec ETL_NHRM_PATIENT_FILTER2 @IN_TABLE  = @testtable
+-- 	-- exec ETL_NHRM_PATIENT_FILTER3 @IN_TABLE  = @testtable
 
-	exec TABLE_PARAM_TEST @IN_TABLE = @testtable
-END;
+-- 	exec TABLE_PARAM_TEST @IN_TABLE = @testtable
+-- END;
 
-GO
+-- GO
 
-EXEC var_select_test;
+-- EXEC var_select_test;
